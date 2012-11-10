@@ -27,8 +27,8 @@ public class BayesLogger extends Logger {
 
 		logger.setLevel(Level.ALL);
 		try {
-			FileHandler fhandler = new FileHandler("log-"
-					+ dateFormat.format(new Date()) + ".txt");
+			FileHandler fhandler = new FileHandler("BayesClassifier-"
+					+ dateFormat.format(new Date()) + ".log");
 			Formatter formmater = new Formatter() {
 				
 				@Override
