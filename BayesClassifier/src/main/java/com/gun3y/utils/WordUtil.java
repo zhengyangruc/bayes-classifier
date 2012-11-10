@@ -18,9 +18,20 @@ import com.gun3y.beans.TextSample;
 import com.gun3y.log.BayesLogger;
 
 public class WordUtil {
-	private final static Logger logger = BayesLogger.getLogger(WordUtil.class.getName());
+	private final static Logger logger = BayesLogger.getLogger(WordUtil.class
+			.getName());
 	private static int minLength = 3;
-	
+
+	public static int calcTotalCount(Map<String, Double> words) {
+		int count = 0;
+		if (words != null && !words.isEmpty()) {
+			for (Entry<String, Double> entry : words.entrySet()) {
+				count += entry.getValue();
+			}
+		}
+		return count;
+	}
+
 	public static Map<String, Double> normalizeWords(Map<String, Double> words) {
 
 		if (words != null && !words.isEmpty()) {
@@ -93,56 +104,63 @@ public class WordUtil {
 		Map<String, TextSample> readTextSamples = readTextSamples("Drama");
 		for (Entry<String, TextSample> entry : readTextSamples.entrySet()) {
 			TextSample value = entry.getValue();
+
 			for (Entry<String, Double> pair : value.getWords().entrySet()) {
-				logger.log(Level.INFO, pair.getKey() + " " + pair.getValue());
+				logger.log(Level.INFO,
+						value.getTitle() + " " + value.getTotalCount() + " "
+								+ value.getReducedCount() + " " + pair.getKey()
+								+ " " + pair.getValue());
 			}
 		}
 	}
-	
-	public static Map<String, TextSample> readTextSamples(){
+
+	public static Map<String, TextSample> readTextSamples() {
 		return readTextSamples(null);
 	}
-	
-	public static  Map<String, TextSample> readTextSamples(String className){
+
+	public static Map<String, TextSample> readTextSamples(String className) {
 		File[] classList;
 		Map<String, TextSample> textSamples = new HashMap<String, TextSample>();
 		File rootDir = new File(FileUtil.ROOT_DIR);
-		
-		if(Strings.isNullOrEmpty(className)){
+
+		if (Strings.isNullOrEmpty(className)) {
 			classList = rootDir.listFiles();
-		}else{
-			File classDir = new File(FileUtil.ROOT_DIR+className);
-			
-			if(classDir != null && classDir.exists() && classDir.isDirectory())
-				classList = new File[]{classDir};
-			else 
+		} else {
+			File classDir = new File(FileUtil.ROOT_DIR + className);
+
+			if (classDir != null && classDir.exists() && classDir.isDirectory())
+				classList = new File[] { classDir };
+			else
 				return textSamples;
 		}
-		
+
 		for (File dirs : classList) {
-			if(dirs !=null && dirs.isDirectory()){
+			if (dirs != null && dirs.isDirectory()) {
 				File[] samples = dirs.listFiles();
 				for (File file : samples) {
-					if(file != null && file.isFile()){
+					if (file != null && file.isFile()) {
 						String title = file.getName();
-						String rawdata = FileUtil.readFile(file.getAbsolutePath());
+						title = title.substring(0, title.indexOf("."));
+						String rawdata = FileUtil.readFile(file
+								.getAbsolutePath());
 						String sampleClass = dirs.getName();
-						
+
 						TextSample textSample = textSamples.get(title);
-						
-						if(textSample == null){
-							textSample = new TextSample(sampleClass, title, rawdata);
+
+						if (textSample == null) {
+							textSample = new TextSample(sampleClass, title,
+									rawdata);
 						}
-						
+
 						textSample.addClass(sampleClass);
 						textSample.extracts();
-						
+
 						textSamples.put(title, textSample);
 					}
 				}
 			}
 		}
-		
+
 		return textSamples;
 	}
 
