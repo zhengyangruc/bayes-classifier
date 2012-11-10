@@ -14,6 +14,8 @@ public class TextSample {
 	private List<String> textClasses = null;
 	private String title = null;
 	private String rawValue = null;
+	private int totalCount = 0;
+	private int reducedCount = 0;
 	private Map<String, Double> words = null;
 
 	public TextSample(String textClass, String title, String rawValue) {
@@ -67,6 +69,10 @@ public class TextSample {
 		if (this.isValid()) {
 			Map<String, Double> extractWordList = WordUtil
 					.extractWordList(this.rawValue);
+			
+			this.reducedCount = extractWordList.size();
+			this.totalCount = WordUtil.calcTotalCount(extractWordList);
+			
 			this.words = WordUtil.normalizeWords(extractWordList);
 		}
 	}
@@ -102,6 +108,22 @@ public class TextSample {
 
 	public void setWords(Map<String, Double> words) {
 		this.words = words;
+	}
+
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public int getReducedCount() {
+		return reducedCount;
+	}
+
+	public void setReducedCount(int reducedCount) {
+		this.reducedCount = reducedCount;
 	}
 
 }
