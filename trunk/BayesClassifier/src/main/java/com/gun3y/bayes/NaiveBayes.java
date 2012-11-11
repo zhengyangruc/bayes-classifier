@@ -97,7 +97,6 @@ public class NaiveBayes implements Classifier {
 
 			prob *= calcGaussianProabality((Double) testInstance
 					.getAttributeByName(attName).getValue(), values);
-			// function.
 		}
 
 		return prob;
