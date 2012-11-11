@@ -48,7 +48,7 @@ public class TrainingSet implements Serializable {
 				"Att1", "Att2", "Att3" }, instances);
 
 		System.out.println(trainingSet);
-		
+
 		System.out.println(trainingSet.printConcepts());
 	}
 
@@ -102,31 +102,36 @@ public class TrainingSet implements Serializable {
 		this.instances = instanceSet;
 	}
 
-	
-	public String printConcepts(){
+	public int getInstanceSize() {
+		if (instances != null)
+			return instances.length;
+
+		return 0;
+	}
+
+	public String printConcepts() {
 		StringBuilder sb = new StringBuilder();
 
-		if(concepts != null && !concepts.isEmpty()){
+		if (concepts != null && !concepts.isEmpty()) {
 			for (Entry<String, List<Instance>> entry : concepts.entrySet()) {
 				sb.append(entry.getKey()).append(":\n");
-				if(entry.getValue() != null){
+				if (entry.getValue() != null) {
 					int count = 1;
 					for (Instance ins : entry.getValue()) {
 						sb.append("\t").append(count++).append("-");
 						for (String attName : this.attributeNames) {
-							sb.append(ins.getAttributeByName(attName))
-									.append("\t");
+							sb.append(ins.getAttributeByName(attName)).append(
+									"\t");
 						}
 						sb.append("\n");
 					}
 				}
 			}
 		}
-		
-		
+
 		return sb.toString();
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

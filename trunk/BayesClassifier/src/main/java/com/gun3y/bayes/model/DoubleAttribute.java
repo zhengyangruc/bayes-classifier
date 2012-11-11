@@ -11,16 +11,16 @@ public class DoubleAttribute extends BaseAttribute implements Serializable {
 	 */
 	private static final long serialVersionUID = 160772916772864023L;
 
-	public static final Double DEFAULT = 0.0;
+	public static final double DEFAULT = 0.0;
 	
-	private Double value;
+	private double value;
 	
 	public DoubleAttribute(String name) {
 		super(name);
 		this.value  =new Double(DEFAULT);
 	}
 	
-	public DoubleAttribute(String name, Double value) {
+	public DoubleAttribute(String name, double value) {
 		super(name);
 		this.value = value;
 	}
