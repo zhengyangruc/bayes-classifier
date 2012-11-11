@@ -9,6 +9,11 @@ public class BaseInstance implements Instance {
 	private String concept;
 	private AttributeSet attributes;
 
+	public BaseInstance(Attribute[] attributes){
+		super();
+		this.attributes = new AttributeSet(attributes);
+	}
+	
 	public BaseInstance(String concept, Attribute[] attributes) {
 		super();
 		this.concept = concept;
@@ -44,7 +49,7 @@ public class BaseInstance implements Instance {
 		StringBuilder sb = new StringBuilder();
 		sb.append("@Instance[Concept=").append(this.concept);
 		for (Attribute att : attributes.getAttributes()) {
-			sb.append("\n" + att);
+			sb.append(", " + att);
 		}
 		sb.append("]");
 
