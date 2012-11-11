@@ -1,4 +1,4 @@
-package com.gun3y.bayes.beans;
+package com.gun3y.bayes.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,8 @@ public class TextSample {
 			this.reducedCount = extractWordList.size();
 			this.totalCount = WordUtil.calcTotalCount(extractWordList);
 			
-			this.words = WordUtil.normalizeWords(extractWordList);
+			//this.words = WordUtil.normalizeWords(extractWordList);
+			this.words  = extractWordList;
 		}
 	}
 

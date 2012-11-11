@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
-import com.gun3y.bayes.beans.TextSample;
 import com.gun3y.bayes.log.BayesLogger;
+import com.gun3y.bayes.model.TextSample;
 
 public class WordUtil {
 	private final static Logger logger = BayesLogger.getLogger(WordUtil.class
@@ -102,16 +102,25 @@ public class WordUtil {
 
 	public static void main(String[] args) throws IOException {
 		Map<String, TextSample> readTextSamples = readTextSamples("Drama");
+		Map<String, Double> wordMap = new HashMap<String, Double>();
+
 		for (Entry<String, TextSample> entry : readTextSamples.entrySet()) {
 			TextSample value = entry.getValue();
 
 			for (Entry<String, Double> pair : value.getWords().entrySet()) {
-				logger.log(Level.INFO,
-						value.getTitle() + " " + value.getTotalCount() + " "
-								+ value.getReducedCount() + " " + pair.getKey()
-								+ " " + pair.getValue());
+
+				if (wordMap.containsKey(pair.getKey()))
+					wordMap.put(pair.getKey(),
+							wordMap.get(pair.getKey()) + pair.getValue());
+				else
+					wordMap.put(pair.getKey(), pair.getValue());
 			}
 		}
+
+		for (Entry<String, Double> entry : wordMap.entrySet()) {
+			logger.log(Level.INFO, entry.getKey() + " " + entry.getValue());
+		}
+
 	}
 
 	public static Map<String, TextSample> readTextSamples() {
