@@ -11,7 +11,7 @@ public class DoubleAttribute extends BaseAttribute implements Serializable {
 	 */
 	private static final long serialVersionUID = 160772916772864023L;
 
-	public static final double DEFAULT = 0.0;
+	public static final double DEFAULT = 1.0;
 	
 	private double value;
 	

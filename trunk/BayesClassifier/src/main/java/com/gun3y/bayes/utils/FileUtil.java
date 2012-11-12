@@ -8,12 +8,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
 
 public class FileUtil {
 
-	public static final String ROOT_DIR = "C:\\Users\\Keysersoze\\Desktop\\Data Sets\\";
+	public static String ROOT_DIR = "C:\\Users\\Keysersoze\\Desktop\\Training Data Sets\\";
 
 	public static String readFile(String filePath){
 		if(!Strings.isNullOrEmpty(filePath)){
@@ -61,8 +62,8 @@ public class FileUtil {
 	}
 
 	public static void main(String[] args) {
-		createFile("The Godfather: Part 2.txt", "asd");
-
+		//createFile("The Godfather: Part 2.txt", "asd");
+		//System.out.println(StringUtils.ge("common", "common"));
 		// System.out.println(isValidName("The Godfather: Part 2.txt"));
 	}
 
