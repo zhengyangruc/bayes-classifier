@@ -1,12 +1,17 @@
 package com.gun3y.bayes.utils;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,12 +20,23 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
 import com.gun3y.bayes.log.BayesLogger;
+import com.gun3y.bayes.model.Attribute;
+import com.gun3y.bayes.model.AttributeSet;
+import com.gun3y.bayes.model.DoubleAttribute;
 import com.gun3y.bayes.model.TextSample;
 
 public class WordUtil {
 	private final static Logger logger = BayesLogger.getLogger(WordUtil.class
 			.getName());
 	private static int minLength = 3;
+
+	public final static String[] ATTRIBUTE_NAMES = { "alien", "army", "camp",
+			"captain", "colonel", "crew", "earth", "family", "friend",
+			"future", "gang", "general", "german", "gun", "horse", "human",
+			"kill", "kiss", "life", "love", "man", "officer", "people",
+			"planet", "power", "relationship", "ride", "rose", "school",
+			"sergeant", "sex", "sheriff", "ship", "shoot", "soldier", "space",
+			"together", "train", "truck", "war", "west", "world", };
 
 	public static int calcTotalCount(Map<String, Double> words) {
 		int count = 0;
@@ -54,9 +70,15 @@ public class WordUtil {
 		return null;
 	}
 
-	public static Map<String, Double> extractWordList(String data) {
+	public static Attribute[] extractWordList(String data) {
 
-		Map<String, Double> map = new HashMap<String, Double>();
+		Map<String, Double> attributes = new HashMap<String, Double>();
+
+		double total = .0;
+
+		for (String attName : WordUtil.ATTRIBUTE_NAMES) {
+			attributes.put(attName, DoubleAttribute.DEFAULT);
+		}
 
 		if (!Strings.isNullOrEmpty(data)) {
 
@@ -84,93 +106,104 @@ public class WordUtil {
 
 						words[i] = words[i].toLowerCase(Locale.ENGLISH).trim();
 
-						Double frequency = (Double) map.get(words[i]);
+						if (attributes.containsKey(words[i])) {
+							Double frequency = (Double) attributes
+									.get(words[i]);
 
-						if (frequency == null)
-							frequency = .0;
-
-						map.put(words[i], ++frequency);
+							attributes.put(words[i], ++frequency);
+						}
 					}
 				}
 			}
 
 		}
-
-		return map;
+		
+		
+		for (Entry<String, Double> entry : attributes.entrySet()) {
+			total += entry.getValue();
+		}
+		List<DoubleAttribute> doubleAttribute = new ArrayList<DoubleAttribute>();
+		for (Entry<String, Double> entry : attributes.entrySet()) {
+			doubleAttribute.add(new DoubleAttribute(entry.getKey(), entry
+					.getValue() / total));
+		}
+		
+		return doubleAttribute.toArray(new DoubleAttribute[doubleAttribute
+				.size()]);
 
 	}
 
 	public static void main(String[] args) throws IOException {
-		Map<String, TextSample> readTextSamples = readTextSamples("Drama");
-		Map<String, Double> wordMap = new HashMap<String, Double>();
 
-		for (Entry<String, TextSample> entry : readTextSamples.entrySet()) {
-			TextSample value = entry.getValue();
-
-			for (Entry<String, Double> pair : value.getWords().entrySet()) {
-
-				if (wordMap.containsKey(pair.getKey()))
-					wordMap.put(pair.getKey(),
-							wordMap.get(pair.getKey()) + pair.getValue());
-				else
-					wordMap.put(pair.getKey(), pair.getValue());
-			}
-		}
-
-		for (Entry<String, Double> entry : wordMap.entrySet()) {
-			logger.log(Level.INFO, entry.getKey() + " " + entry.getValue());
-		}
+		// Set<String> w = new HashSet<String>();
+		// String a = FileUtil
+		// .readFile("C:\\Users\\Keysersoze\\Desktop\\words.txt");
+		// w.addAll(Arrays.asList(a.split("\r\n")));
+		//
+		// for (File file : (new File(FileUtil.ROOT_DIR).listFiles())) {
+		//
+		// Map<String, TextSample> readTextSamples = readTextSamples(file
+		// .getName());
+		// Map<String, Double> wordMap = new HashMap<String, Double>();
+		//
+		// for (Entry<String, TextSample> entry : readTextSamples.entrySet()) {
+		// TextSample value = entry.getValue();
+		//
+		// for (Entry<String, Double> pair : value.getWords().entrySet()) {
+		//
+		// if (wordMap.containsKey(pair.getKey()))
+		// wordMap.put(pair.getKey(), wordMap.get(pair.getKey())
+		// + pair.getValue());
+		// else
+		// wordMap.put(pair.getKey(), pair.getValue());
+		// }
+		// }
+		//
+		// String filename = "C:\\Users\\Keysersoze\\Desktop\\Genres\\"
+		// + file.getName() + ".txt";
+		// FileWriter fw = new FileWriter(filename, true);
+		//
+		// for (Entry<String, Double> entry : wordMap.entrySet()) {
+		//
+		// if (entry.getValue() > 10 && !w.contains(entry.getKey()))
+		// fw.write(entry.getKey() + "\t" + entry.getValue() + "\n");
+		// }
+		//
+		// fw.close();
+		//
+		// }
 
 	}
 
-	public static Map<String, TextSample> readTextSamples() {
-		return readTextSamples(null);
-	}
+	public static List<TextSample> readTextSamples() {
 
-	public static Map<String, TextSample> readTextSamples(String className) {
-		File[] classList;
-		Map<String, TextSample> textSamples = new HashMap<String, TextSample>();
-		File rootDir = new File(FileUtil.ROOT_DIR);
+		List<TextSample> samples = new ArrayList<TextSample>();
 
-		if (Strings.isNullOrEmpty(className)) {
-			classList = rootDir.listFiles();
-		} else {
-			File classDir = new File(FileUtil.ROOT_DIR + className);
+		File root = new File(FileUtil.ROOT_DIR);
 
-			if (classDir != null && classDir.exists() && classDir.isDirectory())
-				classList = new File[] { classDir };
-			else
-				return textSamples;
-		}
+		for (File conceptDirs : root.listFiles()) {
+			if (conceptDirs != null && conceptDirs.exists()
+					&& conceptDirs.isDirectory()) {
 
-		for (File dirs : classList) {
-			if (dirs != null && dirs.isDirectory()) {
-				File[] samples = dirs.listFiles();
-				for (File file : samples) {
-					if (file != null && file.isFile()) {
-						String title = file.getName();
+				for (File sampleFile : conceptDirs.listFiles()) {
+					if (sampleFile != null && sampleFile.exists()
+							&& sampleFile.isFile()) {
+
+						String title = sampleFile.getName();
 						title = title.substring(0, title.indexOf("."));
-						String rawdata = FileUtil.readFile(file
+
+						String rawData = FileUtil.readFile(sampleFile
 								.getAbsolutePath());
-						String sampleClass = dirs.getName();
 
-						TextSample textSample = textSamples.get(title);
+						TextSample textSample = TextSample.createInstance(
+								conceptDirs.getName(), title, rawData);
+						samples.add(textSample);
 
-						if (textSample == null) {
-							textSample = new TextSample(sampleClass, title,
-									rawdata);
-						}
-
-						textSample.addClass(sampleClass);
-						textSample.extracts();
-
-						textSamples.put(title, textSample);
 					}
 				}
 			}
 		}
-
-		return textSamples;
+		return samples;
 	}
 
 }

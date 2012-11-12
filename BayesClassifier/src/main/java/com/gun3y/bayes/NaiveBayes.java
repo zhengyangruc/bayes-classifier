@@ -51,7 +51,6 @@ public class NaiveBayes implements Classifier {
 
 		NaiveBayes bayes = new NaiveBayes(trainingSet);
 
-		
 		System.out.println(bayes.classify(new BaseInstance(att)));
 	}
 
@@ -77,20 +76,21 @@ public class NaiveBayes implements Classifier {
 					.getConcepts().entrySet()) {
 				double accP = getProbability(entry.getKey(), instance);
 
-				if (accP >= bestProbality) {
+				if (accP > bestProbality) {
 					bestProbality = accP;
 					bestConcept = entry.getKey();
 				}
 			}
 		}
-		
+
 		return bestConcept;
 	}
 
 	private double getProbability(String conceptName, Instance testInstance) {
 		List<Instance> subConcepts = trainingSet.getConcepts().get(conceptName);
 
-		double prob = (double) subConcepts.size() / trainingSet.getInstanceSize();
+		double prob = (double) subConcepts.size()
+				/ trainingSet.getInstanceSize();
 
 		for (String attName : trainingSet.getAttributeNames()) {
 			double[] values = getValuesFromAttibute(attName, subConcepts);
@@ -112,8 +112,13 @@ public class NaiveBayes implements Classifier {
 		double std = statistics.getStandardDeviation();
 		double var = statistics.getVariance();
 
-		return Math.exp((-0.5) * Math.pow((num - mean) / std, 2))
+		double result = Math.exp((-0.5) * Math.pow((num - mean) / std, 2))
 				/ Math.sqrt(2 * Math.PI * var);
+		
+		if(Double.isNaN(result))
+			result = Double.MIN_VALUE;
+
+		return result;
 
 	}
 
