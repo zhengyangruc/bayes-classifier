@@ -1,20 +1,8 @@
 package com.gun3y.bayes.model;
 
 import com.gun3y.bayes.model.base.BaseInstance;
-import com.gun3y.bayes.utils.WordUtil;
 
 public class TextSample extends BaseInstance {
-
-	public static TextSample createInstance(String concept, String title,
-			String rawData) {
-		Attribute[] attributes = WordUtil.extractWordList(rawData);
-
-		TextSample sample = new TextSample(concept, attributes);
-		sample.setRawValue(rawData);
-		sample.setTitle(title);
-
-		return sample;
-	}
 
 	public TextSample(String concept, Attribute[] attributes) {
 		super(concept, attributes);

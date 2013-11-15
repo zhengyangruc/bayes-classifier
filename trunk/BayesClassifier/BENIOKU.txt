@@ -1,0 +1,7 @@
+Uygulama java 1.7'de Maven çatýsý altýnda yapýlmýþtýr. 
+
+Maven kullanarak bütün kütüphaneleri ve proje yapýsýný eclipse veya benzer bir IDE'de açabilirsiniz.
+
+src\main\java\com\gun3y\bayes\test\BayesTest.java
+
+Java dosyasý çalýþtýrýlabilir bir dosyadýr. Konsolda ConfisionMatrix'i görebilirsiniz.

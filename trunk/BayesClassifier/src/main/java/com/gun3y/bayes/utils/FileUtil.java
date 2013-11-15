@@ -4,17 +4,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
 
 public class FileUtil {
 
-	public static String ROOT_DIR = "C:\\Users\\Keysersoze\\Desktop\\Training Data Sets\\";
+	public static String ROOT_DIR = ".";
 
 	public static String readFile(String filePath){
 		if(!Strings.isNullOrEmpty(filePath)){
@@ -60,12 +63,29 @@ public class FileUtil {
 		}
 
 	}
-
-	public static void main(String[] args) {
-		//createFile("The Godfather: Part 2.txt", "asd");
-		//System.out.println(StringUtils.ge("common", "common"));
-		// System.out.println(isValidName("The Godfather: Part 2.txt"));
+	
+	public static Map<String, List<File>> getSamples(){
+		File dir = new File(FileUtil.ROOT_DIR);
+		
+		Map<String, List<File>> map = new HashMap<String, List<File>>();
+		
+		if(dir != null && dir.exists() && dir.isDirectory()){
+			for (File conceptDirs : dir.listFiles()) {
+				if(conceptDirs != null && conceptDirs.exists() && conceptDirs.isDirectory()){
+					List<File>  samples= new ArrayList<File>();
+					for (File sampleFile : conceptDirs.listFiles()) {
+						if(sampleFile != null && sampleFile.exists() && sampleFile.isFile()){
+							samples.add(sampleFile);
+						}
+					}
+					map.put(conceptDirs.getName(), samples);
+				}
+			}
+		}
+		
+		return map;
 	}
+
 
 	public static boolean isValidName(String text) {
 		Pattern pattern = Pattern

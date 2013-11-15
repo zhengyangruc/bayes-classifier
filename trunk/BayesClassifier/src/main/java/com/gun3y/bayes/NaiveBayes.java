@@ -2,57 +2,17 @@ package com.gun3y.bayes;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 
-import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import com.google.common.base.Strings;
 import com.gun3y.bayes.model.Attribute;
-import com.gun3y.bayes.model.DoubleAttribute;
 import com.gun3y.bayes.model.Instance;
 import com.gun3y.bayes.model.TrainingSet;
-import com.gun3y.bayes.model.base.BaseInstance;
 
 public class NaiveBayes implements Classifier {
 
 	private TrainingSet trainingSet;
-
-	public static void main(String[] args) {
-		Random r = new Random(System.currentTimeMillis());
-
-		String[] concepts = { "Sci-Fi", // general
-				"Western", // technical
-				"Comedy", // sales
-				"Romance" // marketing
-		};
-
-		Instance[] instances = new Instance[20];
-
-		Attribute[] att = null;
-		for (int i = 0; i < instances.length; i++) {
-
-			att = new Attribute[4];
-
-			for (int j = 0; j < att.length; j++) {
-				att[j] = new DoubleAttribute("Att" + j, r.nextGaussian());
-			}
-
-			instances[i] = new BaseInstance(
-					concepts[r.nextInt(concepts.length)], att);
-		}
-
-		TrainingSet trainingSet = new TrainingSet(new String[] { "Att0",
-				"Att1", "Att2", "Att3" }, instances);
-
-		System.out.println(trainingSet);
-
-		System.out.println(trainingSet.printConcepts());
-
-		NaiveBayes bayes = new NaiveBayes(trainingSet);
-
-		System.out.println(bayes.classify(new BaseInstance(att)));
-	}
 
 	public NaiveBayes(TrainingSet trainingSet) {
 		super();
@@ -92,11 +52,11 @@ public class NaiveBayes implements Classifier {
 		double prob = (double) subConcepts.size()
 				/ trainingSet.getInstanceSize();
 
-		for (String attName : trainingSet.getAttributeNames()) {
-			double[] values = getValuesFromAttibute(attName, subConcepts);
+		for (Attribute att : trainingSet.getAttributes()) {
+			double[] values = getValuesFromAttibute(att.getName(), subConcepts);
 
 			prob *= calcGaussianProabality((Double) testInstance
-					.getAttributeByName(attName).getValue(), values);
+					.getAttributeByName(att.getName()).getValue(), values);
 		}
 
 		return prob;
