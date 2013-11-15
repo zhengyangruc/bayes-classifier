@@ -6,55 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import com.google.common.base.Strings;
-import com.gun3y.bayes.model.base.BaseInstance;
 
 public class TrainingSet implements Serializable {
 
 	private static final long serialVersionUID = 4247395309973049468L;
 
 	private Map<String, List<Instance>> concepts;
-	private String[] attributeNames;
+	private Attribute[] attributes;
 	private Instance[] instances;
 
-	public static void main(String[] args) {
-
-		Random r = new Random(System.currentTimeMillis());
-
-		String[] concepts = { "Sci-Fi", // general
-				"Western", // technical
-				"Comedy", // sales
-				"Romance" // marketing
-		};
-
-		Instance[] instances = new Instance[20];
-
-		Attribute[] att;
-		for (int i = 0; i < instances.length; i++) {
-
-			att = new Attribute[4];
-
-			for (int j = 0; j < att.length; j++) {
-				att[j] = new DoubleAttribute("Att" + j, r.nextGaussian());
-			}
-
-			instances[i] = new BaseInstance(
-					concepts[r.nextInt(concepts.length)], att);
-		}
-
-		TrainingSet trainingSet = new TrainingSet(new String[] { "Att0",
-				"Att1", "Att2", "Att3" }, instances);
-
-		System.out.println(trainingSet);
-
-		System.out.println(trainingSet.printConcepts());
-	}
-
-	public TrainingSet(String[] attributeNames, Instance[] instanceSet) {
+	public TrainingSet(Attribute[] attributes, Instance[] instanceSet) {
 		super();
-		this.attributeNames = attributeNames;
+		this.attributes = attributes;
 		this.instances = instanceSet;
 
 		initialize();
@@ -86,13 +51,7 @@ public class TrainingSet implements Serializable {
 		this.concepts = concepts;
 	}
 
-	public String[] getAttributeNames() {
-		return attributeNames;
-	}
-
-	public void setAttributeNames(String[] attributeNames) {
-		this.attributeNames = attributeNames;
-	}
+	
 
 	public Instance[] getInstanceSet() {
 		return instances;
@@ -119,8 +78,8 @@ public class TrainingSet implements Serializable {
 					int count = 1;
 					for (Instance ins : entry.getValue()) {
 						sb.append("\t").append(count++).append("-");
-						for (String attName : this.attributeNames) {
-							sb.append(ins.getAttributeByName(attName)).append(
+						for (Attribute att : this.attributes) {
+							sb.append(ins.getAttributeByName(att.getName())).append(
 									"\t");
 						}
 						sb.append("\n");
@@ -136,15 +95,15 @@ public class TrainingSet implements Serializable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		if (this.attributeNames != null && this.attributeNames.length > 0) {
+		if (this.attributes != null && this.attributes.length > 0) {
 			if (this.instances != null && this.instances.length > 0) {
 				for (int i = 0; i < this.instances.length; i++) {
 					sb.append((i + 1) + "\t");
 
 					sb.append(instances[i].getConcept()).append("\t");
 
-					for (String attName : this.attributeNames) {
-						sb.append(instances[i].getAttributeByName(attName))
+					for (Attribute att : this.attributes) {
+						sb.append(instances[i].getAttributeByName(att.getName()))
 								.append("\t");
 					}
 					sb.append("\n");
@@ -152,6 +111,14 @@ public class TrainingSet implements Serializable {
 			}
 		}
 		return sb.toString();
+	}
+
+	public Attribute[] getAttributes() {
+	    return attributes;
+	}
+
+	public void setAttributes(Attribute[] attributes) {
+	    this.attributes = attributes;
 	}
 
 }
