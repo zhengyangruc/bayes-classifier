@@ -193,7 +193,6 @@ public class HtmlUtil {
 
 	List<Map.Entry<String, Integer>> freq = new ArrayList<Map.Entry<String, Integer>>(wordMap.entrySet());
 	Collections.sort(freq, new Comparator<Map.Entry<String, Integer>>() {
-	    @Override
 	    public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
 		return Integer.compare(o2.getValue(), o1.getValue());
 	    }
