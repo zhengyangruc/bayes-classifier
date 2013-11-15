@@ -25,12 +25,10 @@ public abstract class BaseAttribute implements Attribute {
 		return false;
 	}
 	
-	@Override
 	public String getName() {
 		return this.name;
 	}
 
-	@Override
 	public abstract Object getValue();
 	
 	@Override

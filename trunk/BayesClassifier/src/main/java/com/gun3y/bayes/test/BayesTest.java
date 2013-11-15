@@ -146,9 +146,8 @@ public class BayesTest {
 
 	    Collections.sort(mostPopular, new Comparator<Attribute>() {
 
-		@Override
 		public int compare(Attribute o1, Attribute o2) {
-		    return Double.compare((double) o2.getValue(), (double) o1.getValue());
+		    return Double.compare((Double) o2.getValue(), (Double) o1.getValue());
 		}
 	    });
 

@@ -26,17 +26,14 @@ public class BaseInstance implements Instance {
 		this.attributes = attributes;
 	}
 
-	@Override
 	public Attribute[] getAtrributes() {
 		return this.attributes.getAttributes();
 	}
 
-	@Override
 	public String getConcept() {
 		return this.concept;
 	}
 
-	@Override
 	public Attribute getAttributeByName(String name) {
 		if (attributes != null)
 			return attributes.getAttribute(name);

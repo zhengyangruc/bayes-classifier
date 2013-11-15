@@ -12,95 +12,88 @@ import com.gun3y.bayes.model.TrainingSet;
 
 public class NaiveBayes implements Classifier {
 
-	private TrainingSet trainingSet;
+    private TrainingSet trainingSet;
 
-	public NaiveBayes(TrainingSet trainingSet) {
-		super();
-		this.trainingSet = trainingSet;
-	}
+    public NaiveBayes(TrainingSet trainingSet) {
+	super();
+	this.trainingSet = trainingSet;
+    }
 
-	@Override
-	public boolean train() {
+    public boolean train() {
 
-		return false;
-	}
+	return false;
+    }
 
-	@Override
-	public String classify(Instance instance) {
+    public String classify(Instance instance) {
 
-		double bestProbality = 0.0;
-		String bestConcept = "";
+	double bestProbality = 0.0;
+	String bestConcept = "";
 
-		if (trainingSet != null) {
-			for (Entry<String, List<Instance>> entry : trainingSet
-					.getConcepts().entrySet()) {
-				double accP = getProbability(entry.getKey(), instance);
+	if (trainingSet != null) {
+	    for (Entry<String, List<Instance>> entry : trainingSet.getConcepts().entrySet()) {
+		double accP = getProbability(entry.getKey(), instance);
 
-				if (accP > bestProbality) {
-					bestProbality = accP;
-					bestConcept = entry.getKey();
-				}
-			}
+		if (accP > bestProbality) {
+		    bestProbality = accP;
+		    bestConcept = entry.getKey();
 		}
-
-		return bestConcept;
+	    }
 	}
 
-	private double getProbability(String conceptName, Instance testInstance) {
-		List<Instance> subConcepts = trainingSet.getConcepts().get(conceptName);
+	return bestConcept;
+    }
 
-		double prob = (double) subConcepts.size()
-				/ trainingSet.getInstanceSize();
+    private double getProbability(String conceptName, Instance testInstance) {
+	List<Instance> subConcepts = trainingSet.getConcepts().get(conceptName);
 
-		for (Attribute att : trainingSet.getAttributes()) {
-			double[] values = getValuesFromAttibute(att.getName(), subConcepts);
+	double prob = (double) subConcepts.size() / trainingSet.getInstanceSize();
 
-			prob *= calcGaussianProabality((Double) testInstance
-					.getAttributeByName(att.getName()).getValue(), values);
-		}
+	for (Attribute att : trainingSet.getAttributes()) {
+	    double[] values = getValuesFromAttibute(att.getName(), subConcepts);
 
-		return prob;
+	    prob *= calcGaussianProabality((Double) testInstance.getAttributeByName(att.getName()).getValue(), values);
 	}
 
-	private double calcGaussianProabality(double num, double[] list) {
-		SummaryStatistics statistics = new SummaryStatistics();
-		for (double d : list) {
-			statistics.addValue(d);
-		}
+	return prob;
+    }
 
-		double mean = statistics.getMean();
-		double std = statistics.getStandardDeviation();
-		double var = statistics.getVariance();
-
-		double result = Math.exp((-0.5) * Math.pow((num - mean) / std, 2))
-				/ Math.sqrt(2 * Math.PI * var);
-		
-		if(Double.isNaN(result))
-			result = Double.MIN_VALUE;
-
-		return result;
-
+    private double calcGaussianProabality(double num, double[] list) {
+	SummaryStatistics statistics = new SummaryStatistics();
+	for (double d : list) {
+	    statistics.addValue(d);
 	}
 
-	public double[] getValuesFromAttibute(String attName, List<Instance> ins) {
-		if (ins != null && !Strings.isNullOrEmpty(attName)) {
-			double[] vec = new double[ins.size()];
-			for (int i = 0; i < vec.length; i++) {
-				vec[i] = (Double) ins.get(i).getAttributeByName(attName)
-						.getValue();
-			}
-			return vec;
-		}
+	double mean = statistics.getMean();
+	double std = statistics.getStandardDeviation();
+	double var = statistics.getVariance();
 
-		return new double[0];
+	double result = Math.exp((-0.5) * Math.pow((num - mean) / std, 2)) / Math.sqrt(2 * Math.PI * var);
+
+	if (Double.isNaN(result))
+	    result = Double.MIN_VALUE;
+
+	return result;
+
+    }
+
+    public double[] getValuesFromAttibute(String attName, List<Instance> ins) {
+	if (ins != null && !Strings.isNullOrEmpty(attName)) {
+	    double[] vec = new double[ins.size()];
+	    for (int i = 0; i < vec.length; i++) {
+		vec[i] = (Double) ins.get(i).getAttributeByName(attName).getValue();
+	    }
+	    return vec;
 	}
 
-	public TrainingSet getTrainingSet() {
-		return trainingSet;
-	}
+	return new double[0];
+    }
 
-	public void setTrainingSet(TrainingSet trainingSet) {
-		this.trainingSet = trainingSet;
-	}
+    public TrainingSet getTrainingSet() {
+	return trainingSet;
+    }
+
+    public void setTrainingSet(TrainingSet trainingSet) {
+	this.trainingSet = trainingSet;
+    }
 
 }
